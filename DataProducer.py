@@ -8,7 +8,7 @@ path = os.getcwd()
 
 def produceData(size,filename):
     """根据传入的数据规模 以及文件名称 生成给定长度的随机数据 并将数据存入对应的 txt中"""
-    randomData=np.random.randint(MINNUM,MAXNUM,(1,size))
+    randomData=np.random.randint(MINNUM,MAXNUM,(size,1))
     np.savetxt(path+r'\\'+filename+r'.txt',randomData,fmt="%d",delimiter=' ')
 
 

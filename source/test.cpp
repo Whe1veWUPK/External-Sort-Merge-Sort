@@ -1,21 +1,17 @@
-#include<iostream>
-#include "FileOperator.hpp"
-
+// #include<iostream>
+// #include "FileOperator.hpp"
+// #include "Timer.hpp"
 // void test(){
-//     Buffer inputBuffer(3);
 //     FileOperator fileOperator;
-//     // std::cout << inputBuffer.Empty() << "\n";
-//     // std::cout << inputBuffer.Full() << "\n";
-//     // fileOperator.writeToInputBuffer("Input.txt", 3,3, &inputBuffer);
-//     // for (int i = 0; i < 3;++i){
+//     Buffer inputBuffer(5);
+//     fileOperator.createInitialRuns("Input.txt", "Output.txt", 5,&inputBuffer);
+    
+//     // fileOperator.writeToInputBuffer("Input.txt", 5, 0, &inputBuffer);
+//     // inputBuffer.quickSort(0, inputBuffer.getCurSize() - 1);
+//     // for (int i = 0; i < inputBuffer.getCurSize();++i){
 //     //     std::cout << inputBuffer.buffer[i] << " ";
 //     // }
 //     // std::cout << "\n";
-//     // std::cout << inputBuffer.Empty() << "\n";
-//     // std::cout << inputBuffer.Full() << "\n";
-//     // fileOperator.writeToFile("Output.txt", 3,true,true,&inputBuffer);
-//     //fileOperator.updateInputFile("Output.txt", "Input.txt");
-//     std::cout<<fileOperator.getDataSize("Input.txt")<<"\n";
 // }
 // int main(){
 

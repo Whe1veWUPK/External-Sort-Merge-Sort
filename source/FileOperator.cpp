@@ -19,24 +19,29 @@ void FileOperator::writeToInputBuffer(std::string filepath,int predictSize,int s
                   << "\n";
     }
     std::string line;
-    std::getline(fin, line);
-    int n;
-    std::istringstream iss(line);
-    int pos = 0;
-    for (int i = 0; i < predictSize;++i){
-        //读取数据
-        iss >> n;
-        ++pos;
-        if(pos<=startPostion){
-            --i;
+    int curPostion = 0;
+    int readSize = 0;
+    while(std::getline(fin,line)){
+        std::istringstream iss(line);
+        if(curPostion<startPostion){
+            ++curPostion;
         }
         else{
-            inputBuffer->append(i, n);
+            if(readSize>=predictSize){
+                //如果已经读到预期Size的大小 则直接退出
+                break;
+            }
+            else{
+                int n;
+                iss >> n;
+                inputBuffer->append(readSize,n);
+                ++readSize;
+            }
         }
     }
     fin.close();
 }
-void FileOperator::writeToFile(std::string filepath,int predictSize,bool isFirst,bool isLast,Buffer*outputBuffer){
+void FileOperator::writeToFile(std::string filepath,int predictSize,bool isFirst,Buffer*outputBuffer){
     int bufferSize = outputBuffer->getBufferSize();
     // 如果预测大小与实际提供的 buffer大小不同  则输出错误信息
     if(bufferSize>predictSize){
@@ -60,12 +65,9 @@ void FileOperator::writeToFile(std::string filepath,int predictSize,bool isFirst
     }
     std::ostringstream oss;
     for (int i = 0; i < predictSize;++i){
-        oss << outputBuffer->buffer[i] << " ";
+        oss << outputBuffer->buffer[i] << "\n";
     }
-    if(isLast){
-        //如果是某一轮次的最后一个 outputBuffer输出 则输出换行符
-        oss << "\n";
-    }
+
     std::string outString = oss.str();
     //将信息输出到文件中
     fout << outString;
@@ -87,10 +89,33 @@ void FileOperator::updateInputFile(std::string outputPath,std::string inputPath)
     }
 
     std::string line;
-    std::getline(fin, line);
-    fout << line;
+    while(std::getline(fin, line)){
+        fout << (line+"\n");
+    }
+   
     fin.close();
     fout.close();
+}
+void FileOperator::createInitialRuns(std::string filepath,std::string outputPath,int runSize,Buffer*inputBuffer){
+    int curPos = 0;
+    int dataSize = this->getDataSize(filepath);
+    bool isFirst = true;
+    while(curPos<dataSize){
+        //读取到 inputBuffer 里面
+        this->writeToInputBuffer(filepath, runSize, curPos, inputBuffer);
+        //更新坐标
+        curPos += inputBuffer->getCurSize();
+        //排序
+        inputBuffer->quickSort(0, inputBuffer->getCurSize() - 1);
+        //写到文件中去
+        this->writeToFile(outputPath, inputBuffer->getCurSize(), isFirst, inputBuffer);
+        //更新isFirst
+        isFirst = false;
+        //重置buffer
+        inputBuffer->resize(runSize);
+    }
+    //更新文档
+    this->updateInputFile(outputPath, filepath);
 }
 int FileOperator::getDataSize(std::string filepath){
     std::fstream fin(filepath, std::ios::in);
@@ -99,12 +124,13 @@ int FileOperator::getDataSize(std::string filepath){
                   << "\n";
     }
     std::string line;
-    std::getline(fin, line);
-    std::istringstream iss(line);
+    
+    
     int size = 0;
-    int n;
-    while(iss>>n){
+    
+    while(std::getline(fin, line)){
         ++size;
     }
+    fin.close();
     return size;
 }
