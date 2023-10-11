@@ -19,6 +19,10 @@ Buffer::Buffer(int bufferSize){
     this->isEmpty = true;
     this->buffer = new int[this->bufferSize];
 }
+void Buffer::moveCurPos(){
+    //更新curPos的函数
+    this->curLocation += 1;
+}
 int Buffer::getBufferSize(){
     return this->bufferSize;
 }
@@ -84,4 +88,13 @@ bool Buffer::Full(){
 bool Buffer::Empty(){
     //判断 buffer是否为空
     return this->isEmpty;
+}
+bool Buffer::isOver(){
+    //查询当前buffer是否已经Merge Over
+    if(this->curLocation>=this->curSize){
+        return true;
+    }
+    else{
+        return false;
+    }
 }
