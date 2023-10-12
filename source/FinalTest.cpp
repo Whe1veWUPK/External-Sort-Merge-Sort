@@ -20,6 +20,7 @@ void Merge(Buffer*inputBuffer,BufferBoundery*bufferBoundery,int numOfMergeWays,B
     for (int i = 0; i < numOfMergeWays;++i){
         totalSize += (bufferBoundery[i].endPos - bufferBoundery[i].startPos+1);
     }
+    // std::cout << "Input buffer is : \n";
     // for (int j = 0; j < numOfMergeWays;++j){
     //     for (int i1 = 0; i1 < bufferSize; ++i1){
     //         std::cout << inputBuffer[j].buffer[i1] << " ";
@@ -31,16 +32,24 @@ void Merge(Buffer*inputBuffer,BufferBoundery*bufferBoundery,int numOfMergeWays,B
         min = INT_MAX;
         for (int j = 0; j < numOfMergeWays; ++j){
             if(inputBuffer[j].isOver()){
+                //std::cout << "Bufferboundery " << j << " curPos: " << bufferBoundery[j].curPos << "\n";
                 bufferBoundery[j].curPos += bufferSize;
+                //std::cout << "Move to : " << bufferBoundery[j].curPos << "\n";
                 //std::cout << "Update inputBuffer!\n";
                 //如果inputBuffer已经Merge完毕 并且还有对应的数据没有读取
                 inputBuffer[j].resize(bufferSize);
                 //进行读取
-                if(bufferBoundery[j].curPos<=bufferBoundery[j].endPos){
+                if(bufferBoundery[j].curPos<bufferBoundery[j].endPos){
                    //如果仍在范围内
                    fileOperator.writeToInputBuffer("Input.txt", bufferSize, bufferBoundery[j].curPos, &inputBuffer[j]);
+                //    std::cout << "Update inputBuffer is: \n";
+                //    for (int i1 = 0; i1 < bufferSize;++i1){
+                //        std::cout << inputBuffer[j].buffer[i1] << " ";
+                //    }
+                //    std::cout << "\n";
                 }
                 else{
+                    //彻底完成
                     continue;
                 }
                 
@@ -64,6 +73,7 @@ void Merge(Buffer*inputBuffer,BufferBoundery*bufferBoundery,int numOfMergeWays,B
         }
         else{
            fileOperator.writeToFile("Output.txt", outputBuffer->getBufferSize(), isFirst, outputBuffer);
+        //    std::cout << "Output Buffer is : \n";
         //    for (int i = 0; i < bufferSize;++i){
         //         std::cout << outputBuffer->buffer[i] << " ";
         //    }
@@ -82,7 +92,7 @@ void Merge(Buffer*inputBuffer,BufferBoundery*bufferBoundery,int numOfMergeWays,B
         }
     }
     //把最后的outputBuffer进行输出
-    if(!outputBuffer->Empty()){
+    if(!(outputBuffer->Empty())){
         fileOperator.writeToFile("Output.txt", outputBuffer->getCurSize(), isFirst, outputBuffer);
         //重置outputBuffer
         outputBuffer->resize(bufferSize);
@@ -136,6 +146,7 @@ void finalTest(){
             //剩一个Run直接退出
             break;
         }
+        //std::cout << "Cur round is:"<<round<<"\n";
         while(numOfRuns>0){
              
              if(numOfRuns>=k){
@@ -155,7 +166,7 @@ void finalTest(){
                     // }
                     // std::cout << "\n";
                     // 更新bufferBoundery内部的 curPos
-                    bufferBoundery[i].curPos += initialRunSize-1;
+                    //bufferBoundery[i].curPos += initialRunSize-1;
                 }
                 //Merge 操作
                 Merge(inputBuffer, bufferBoundery, k, &outputBuffer,isFirst);
@@ -199,7 +210,7 @@ void finalTest(){
                 inputBuffer[i].resize(initialRunSize);
              }
         }
-        
+        ++round;
         //更新下一轮的input文件
         fileOperator.updateInputFile("Output.txt", "Input.txt");
         //更新下一轮的numOfRuns

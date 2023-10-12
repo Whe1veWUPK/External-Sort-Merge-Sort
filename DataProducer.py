@@ -11,10 +11,10 @@ def produceData(size,filename):
     randomData=np.random.randint(MINNUM,MAXNUM,(size,1))
     np.savetxt(path+r'\\'+filename+r'.txt',randomData,fmt="%d",delimiter=' ')
 
-
+62
 inputDataSize = input("Please input the data's size: ")
-inputFilename = input("Please input the path of the file that the data is stored: ")
+
 dataSize = int(inputDataSize)
 
-produceData(dataSize, inputFilename)
+produceData(dataSize, "Input")
 
